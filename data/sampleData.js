@@ -4,7 +4,7 @@ export const sources = [
     sourceType: "demo",
     title: "판사맵 데모 입력 자료",
     url: "./docs/policy.md",
-    publisher: "JudgeMap prototype",
+    publisher: "Pansamap prototype",
     publishedAt: "2026-04-30",
     collectedAt: "2026-04-30",
     reliabilityLevel: "prototype",
@@ -63,13 +63,13 @@ export const courts = [
     mapClass: "pin-seoul"
   },
   {
-    id: "court-seoul-admin",
+    id: "court-seoul-publiclaw",
     name: "서울행정법원",
     type: "전문법원",
     region: "서울",
     address: "서울 서초구 강남대로 193",
     sourceIds: ["src-scourt"],
-    mapClass: "pin-admin"
+    mapClass: "pin-publiclaw"
   },
   {
     id: "court-daejeon",
@@ -129,7 +129,7 @@ export const judges = [
     id: "judge-demo-03",
     name: "데모 법관 03",
     normalizedName: "demo-judge-03",
-    currentCourtId: "court-seoul-admin",
+    currentCourtId: "court-seoul-publiclaw",
     currentDivision: "행정4부",
     currentTitle: "부장판사",
     bioSummary: "행정 사건 중심 법관 상세 페이지의 표시 구조를 확인하기 위한 항목입니다.",
@@ -177,10 +177,10 @@ export const judges = [
     id: "judge-demo-07",
     name: "데모 법관 07",
     normalizedName: "demo-judge-07",
-    currentCourtId: "court-seoul-admin",
+    currentCourtId: "court-seoul-publiclaw",
     currentDivision: "행정9부",
     currentTitle: "판사",
-    bioSummary: "정정 요청 대상 선택과 관리자 비공개 처리 흐름을 검증하기 위한 데이터입니다.",
+    bioSummary: "정정 요청 대상 선택과 운영자 검토 흐름을 검증하기 위한 데이터입니다.",
     status: "active",
     sourceIds: ["src-demo"],
     tags: ["행정", "노동"]
@@ -245,7 +245,7 @@ export const appointments = [
   {
     id: "app-04",
     judgeId: "judge-demo-03",
-    courtId: "court-seoul-admin",
+    courtId: "court-seoul-publiclaw",
     title: "부장판사",
     division: "행정4부",
     startDate: "2024-02-19",
@@ -285,7 +285,7 @@ export const appointments = [
   {
     id: "app-08",
     judgeId: "judge-demo-07",
-    courtId: "court-seoul-admin",
+    courtId: "court-seoul-publiclaw",
     title: "판사",
     division: "행정9부",
     startDate: "2026-02-24",
@@ -505,6 +505,6 @@ export const requiredControls = [
   "정정 요청 폼",
   "운영정책 페이지",
   "개인정보 처리방침 초안",
-  "관리자 전용 수정·비공개 처리",
+  "운영자 검토 후 수정·비공개 처리",
   "출처별 수집일 기록"
 ];

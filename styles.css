@@ -605,7 +605,7 @@ a:hover {
   top: 17%;
 }
 
-.pin-admin {
+.pin-publiclaw {
   left: 46%;
   top: 29%;
 }
@@ -884,30 +884,6 @@ a:hover {
   box-shadow: 0 0 0 3px rgba(47, 118, 111, 0.12);
 }
 
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.admin-table th,
-.admin-table td {
-  border-bottom: 1px solid var(--line);
-  padding: 10px 8px;
-  text-align: left;
-  vertical-align: top;
-}
-
-.admin-table th {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.admin-table td {
-  font-size: 13px;
-  line-height: 1.5;
-}
-
 .toast {
   position: fixed;
   right: 18px;
@@ -982,7 +958,7 @@ a:hover {
     top: 30px;
   }
 
-  .pin-admin {
+  .pin-publiclaw {
     top: 120px;
   }
 

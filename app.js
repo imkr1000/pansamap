@@ -10,8 +10,7 @@ import {
 
 const app = document.querySelector("#app");
 const storageKeys = {
-  corrections: "judgemap:corrections",
-  hiddenJudges: "judgemap:hidden-judges"
+  corrections: "pansamap:corrections"
 };
 
 const state = {
@@ -41,24 +40,16 @@ function courtById(id) {
   return courts.find((court) => court.id === id);
 }
 
-function judgeById(id, includeHidden = false) {
-  const judge = judges.find((item) => item.id === id);
-  if (!judge) return undefined;
-  if (includeHidden) return judge;
-  return hiddenJudgeIds().includes(judge.id) ? undefined : judge;
+function judgeById(id) {
+  return judges.find((item) => item.id === id && item.status === "active");
 }
 
 function caseById(id) {
   return caseDocuments.find((item) => item.id === id);
 }
 
-function hiddenJudgeIds() {
-  return readJson(storageKeys.hiddenJudges, []);
-}
-
 function visibleJudges() {
-  const hidden = new Set(hiddenJudgeIds());
-  return judges.filter((judge) => judge.status === "active" && !hidden.has(judge.id));
+  return judges.filter((judge) => judge.status === "active");
 }
 
 function corrections() {
@@ -163,7 +154,6 @@ function shell(content) {
             ${navButton("#/cases", "판결", "¶", view)}
             ${navButton("#/correction", "정정", "!", view)}
             ${navButton("#/policy", "정책", "i", view)}
-            ${navButton("#/admin", "관리", "◇", view)}
           </nav>
         </div>
       </header>
@@ -847,73 +837,6 @@ function policyView() {
   `);
 }
 
-function adminView() {
-  const hidden = hiddenJudgeIds();
-  const pending = corrections();
-  const sourceCoverage = judges.filter((judge) => judge.sourceIds.length > 0).length;
-
-  return shell(`
-    <div class="grid detail-grid">
-      <section class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>관리자 콘솔 프로토타입</h2>
-            <p>정적 MVP라 인증은 붙이지 않았지만, v0 필수 관리 동작을 로컬 상태로 검증합니다.</p>
-          </div>
-        </div>
-        <div class="panel-body">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>법관</th>
-                <th>현재 소속</th>
-                <th>상태</th>
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${judges
-                .map((judge) => {
-                  const court = courtById(judge.currentCourtId);
-                  const isHidden = hidden.includes(judge.id);
-                  return `
-                    <tr>
-                      <td>${escapeHtml(judge.name)}</td>
-                      <td>${escapeHtml(court?.name ?? "")} · ${escapeHtml(judge.currentDivision)}</td>
-                      <td><span class="pill ${isHidden ? "warn" : "safe"}">${isHidden ? "비공개" : "공개"}</span></td>
-                      <td>
-                        <button class="${isHidden ? "ghost-button" : "danger-button"}" type="button" data-toggle-hidden="${judge.id}">
-                          ${isHidden ? "공개 복구" : "비공개 처리"}
-                        </button>
-                      </td>
-                    </tr>
-                  `;
-                })
-                .join("")}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside class="grid">
-        <section class="panel">
-          <div class="panel-header"><h3>품질 체크</h3></div>
-          <div class="panel-body">
-            <div class="metric-row" style="grid-template-columns: 1fr 1fr;">
-              <div class="metric"><strong>${sourceCoverage}/${judges.length}</strong><span>법관 출처 연결</span></div>
-              <div class="metric"><strong>${pending.length}</strong><span>정정 요청</span></div>
-            </div>
-          </div>
-        </section>
-        <section class="panel">
-          <div class="panel-header"><h3>수집 출처</h3></div>
-          <div class="panel-body">${sourceList(sources.map((source) => source.id))}</div>
-        </section>
-      </aside>
-    </div>
-  `);
-}
-
 function notFoundView(message) {
   return shell(`
     <section class="panel">
@@ -937,8 +860,7 @@ function currentView() {
   if (view === "case") return caseDetailView(id);
   if (view === "correction") return correctionView();
   if (view === "policy") return policyView();
-  if (view === "admin") return adminView();
-  return homeView();
+  return landingView();
 }
 
 function render() {
@@ -972,22 +894,6 @@ function bindEvents() {
   document.querySelectorAll("[data-policy-tab]").forEach((button) => {
     button.addEventListener("click", () => {
       state.policyTab = button.dataset.policyTab;
-      render();
-    });
-  });
-
-  document.querySelectorAll("[data-toggle-hidden]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const id = button.dataset.toggleHidden;
-      const hidden = new Set(hiddenJudgeIds());
-      if (hidden.has(id)) {
-        hidden.delete(id);
-        showToast("공개 상태로 복구했습니다.");
-      } else {
-        hidden.add(id);
-        showToast("법관 정보를 비공개 처리했습니다.");
-      }
-      writeJson(storageKeys.hiddenJudges, [...hidden]);
       render();
     });
   });
